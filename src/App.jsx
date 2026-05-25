@@ -5,6 +5,7 @@ import Navbar from "./components/layout/Navbar";
 import { useAuth } from "./hooks/useAuth";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import ForgotPassword from "./pages/ForgotPassword";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
@@ -13,6 +14,7 @@ import ProductDetail from "./pages/ProductDetail";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 import Shop from "./pages/Shop";
+import VerifyEmail from "./pages/VerifyEmail";
 import Wishlist from "./pages/Wishlist";
 
 function ProtectedRoute({ children }) {
@@ -39,6 +41,8 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route
             path="/checkout"
             element={

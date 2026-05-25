@@ -84,23 +84,74 @@ export function AuthProvider({ children }) {
 
   const register = async (payload) => {
     try {
-      await api.post("/auth/signup", {
+      const { data } = await api.post("/auth/signup", {
         email: payload.email,
         password: payload.password,
       });
-
-      const loginResult = await login(payload.email, payload.password);
-
-      if (loginResult.success) {
-        const nextUser = deriveUser(payload, localStorage.getItem(TOKEN_KEY) || "");
-        persist(nextUser, localStorage.getItem(TOKEN_KEY));
-        toast.success("Account created successfully.");
-      }
-
-      return loginResult;
+      localStorage.setItem("pendingSignupEmail", payload.email);
+      localStorage.setItem("pendingSignupUser", JSON.stringify(payload));
+      toast.success(data.message || "Account created. Verify your email to continue.");
+      return { success: true };
     } catch (error) {
       const message =
         error.response?.data?.message || "Registration could not be completed.";
+      toast.error(message);
+      return { success: false, message };
+    }
+  };
+
+  const verifyEmail = async (email, otp) => {
+    try {
+      const { data } = await api.post("/auth/verify-email", { email, otp });
+      toast.success(data.message || "Email verified successfully.");
+      localStorage.removeItem("pendingSignupEmail");
+      return { success: true };
+    } catch (error) {
+      const message =
+        error.response?.data?.message || "Email verification failed.";
+      toast.error(message);
+      return { success: false, message };
+    }
+  };
+
+  const resendOtp = async (email) => {
+    try {
+      const { data } = await api.post("/auth/resend-otp", { email });
+      toast.success(data.message || "Verification code resent.");
+      return { success: true };
+    } catch (error) {
+      const message =
+        error.response?.data?.message || "Unable to resend code.";
+      toast.error(message);
+      return { success: false, message };
+    }
+  };
+
+  const requestPasswordReset = async (email) => {
+    try {
+      const { data } = await api.post("/auth/forgot-password", { email });
+      toast.success(data.message || "Reset code sent.");
+      return { success: true };
+    } catch (error) {
+      const message =
+        error.response?.data?.message || "Unable to send reset code.";
+      toast.error(message);
+      return { success: false, message };
+    }
+  };
+
+  const resetPassword = async (email, otp, newPassword) => {
+    try {
+      const { data } = await api.post("/auth/reset-password", {
+        email,
+        otp,
+        newPassword,
+      });
+      toast.success(data.message || "Password reset successfully.");
+      return { success: true };
+    } catch (error) {
+      const message =
+        error.response?.data?.message || "Password reset failed.";
       toast.error(message);
       return { success: false, message };
     }
@@ -129,6 +180,10 @@ export function AuthProvider({ children }) {
       token,
       login,
       register,
+      verifyEmail,
+      resendOtp,
+      requestPasswordReset,
+      resetPassword,
       logout,
       updateProfile,
       isAuthenticated: Boolean(token),

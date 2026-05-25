@@ -31,7 +31,7 @@ function Register() {
     const result = await register(form);
 
     if (result.success) {
-      navigate("/profile");
+      navigate("/verify-email");
     }
   };
 

@@ -51,9 +51,9 @@ function Login() {
                 <input className="input-luxury" placeholder="Password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} required />
               </div>
               <div className="mt-4 text-right">
-                <a href="/forgot-password" className="text-xs uppercase tracking-[0.24em] text-gold">
+                <Link to="/forgot-password" className="text-xs uppercase tracking-[0.24em] text-gold">
                   Forgot Password?
-                </a>
+                </Link>
               </div>
               <div className="mt-8">
                 <Button variant="primary" className="w-full" type="submit">
